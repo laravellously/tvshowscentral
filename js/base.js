@@ -23,6 +23,7 @@ function loadShows() {
         var currentDate = new Date();
         if(currentDate > nextUpdateTime) {
             // Do Upgrade
+            console.log('Do Upgrade');
             if (window.XMLHttpRequest) {
                 // code for modern browsers
                 var xmlhttp = new XMLHttpRequest();
@@ -41,30 +42,34 @@ function loadShows() {
                     
                 }
             };
-            xmlhttp.open("GET", "http://api.tvmaze.com/shows", true);
+            xmlhttp.open("GET", "https://api.tvmaze.com/shows", true);
             xmlhttp.send();
         } else {
-            if (window.XMLHttpRequest) {
-                // code for modern browsers
-                var xmlhttp = new XMLHttpRequest();
-            } else {
-                // code for old IE browsers
-                var xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
-            }
-            xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) {
-                    // store in localStorage
-                    localStorage.setItem('allShows', this.responseText);
-                    // save the current time to localStorage
-                    localStorage.setItem('currentTime', new Date());
-                    // Generate DOM
-                    generateDOM(JSON.parse(localStorage.getItem('allShows')));
-                    
-                }
-            };
-            xmlhttp.open("GET", "http://api.tvmaze.com/shows", true);
-            xmlhttp.send();
+            console.log("Get from localstorage");
+            generateDOM(JSON.parse(localStorage.getItem('allShows')));
         }
+    } else {
+        // Fresh browser, get from server
+        if (window.XMLHttpRequest) {
+            // code for modern browsers
+            var xmlhttp = new XMLHttpRequest();
+        } else {
+            // code for old IE browsers
+            var xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+        }
+        xmlhttp.onreadystatechange = function() {
+            if (this.readyState == 4 && this.status == 200) {
+                // store in localStorage
+                localStorage.setItem('allShows', this.responseText);
+                // save the current time to localStorage
+                localStorage.setItem('currentTime', new Date());
+                // Generate DOM
+                generateDOM(JSON.parse(localStorage.getItem('allShows')));
+                
+            }
+        };
+        xmlhttp.open("GET", "https://api.tvmaze.com/shows", true);
+        xmlhttp.send();
     }
 }
 
